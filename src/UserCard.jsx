@@ -1,30 +1,27 @@
 import React, {useState} from 'react'
 
 function UserCard(props) {
-   const{id, userId,title,body, ...rest} = props;
+   const{name, email, street, city,...rest} = props;
    const [clicked, setClicked] = useState(false);
 
    console.log(Object.entries(rest));
 
     return (
-    <div className="bg-white p-6 rounded-lg shadow hover:bg-Special-Red2 border shadow-md transition-shadow ">
-
+    <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+      <h2 className="text-xl font-semibold text-gray-800 mb-2">{name}</h2>
       <p className="text-gray-600">
-        <span className="font-medium "></span> {id}
+        <span className="font-medium">Email:</span> {email}
       </p>
       <p className="text-gray-600">
-        <span className="font-medium"></span> {title}
+        <span className="font-medium">Address:</span> {street}, {city}
       </p>
-      <p className="text-gray-600">
-        <span className="font-medium"></span> {body}
-      </p>
-        {}
+            {/* Menampilkan data tambahan dari rest */}
       {Object.entries(rest).map(([key, value]) => (
         <p key={key} className="text-gray-600">
           <span className="font-medium capitalize">{key}:</span> {value}
         </p>
       ))}
-      <button className={`${clicked ? "bg-Special-Red2" : "bg-red-800"} text-white p-2 rounded-md`}
+      <button className={`${clicked ? "bg-special-green" : "bg-gray-01"} text-white p-2 rounded-md`}
       onClick={() => setClicked(true)}
       >
         {clicked ? "Tombol sudah diklik" : "Silakan Klik"}
