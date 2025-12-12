@@ -1,4 +1,5 @@
 import React from 'react';
+import Input from './Input';
 
 function LabeledInput(props) {
   const { label, id, type = "text", placeholder = "", name, ...rest } = props;
@@ -17,6 +18,8 @@ function LabeledInput(props) {
         name={name}
         {...rest}
       />
+
+            <Input id={id} {...rest} />
     </>
   );
 }
