@@ -1,7 +1,7 @@
 import React from "react";
 
 function Button(props) {
-  const { children = "Sign In", type = "SignUp", variant = "primary" } = props;
+  const { children = "Login", type = "SignUp", variant = "primary" } = props;
 
   const baseClasses = "h-12 rounded-md text-sm font-medium w-full flex items-center justify-center";
   const variantClasses = {
