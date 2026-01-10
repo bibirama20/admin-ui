@@ -2,22 +2,17 @@ import React from "react";
 import Card from "../Elements/Card";
 import Icon from "../Elements/Icon";
 import CompositionExample from "../Elements/CompositionExample";
+import CircularProgress from '@mui/material/CircularProgress';
 
 function CardGoal(props) {
   const { data = {} } = props;
 
-  const present_amount = data.present_amount ?? 0;
-  const target_amount = data.target_amount ?? 0;
-
-  const chartValue =
+   const { target_amount = 0, present_amount = 0 } = data;
+ const chartValue =
     target_amount > 0 ? (present_amount / target_amount) * 100 : 0;
 
-  return (
-    <>
-      <Card
-        title="Goals"
-        desc={
-          <div className="p-2">
+    const chartData=(
+      <div className="p-2">
             <div className="flex justify-between items-center">
               <div className="flex">
                 <span className="text-2xl font-bold me-4">
@@ -66,8 +61,24 @@ function CardGoal(props) {
               </div>
             </div>
           </div>
-        }
-      />
+
+    );
+
+  return (
+    <>
+ <Card
+  title="Goals"
+  desc={
+    !data ? (
+      <div className="flex flex-col justify-center items-center h-full text-primary">
+        <CircularProgress color="inherit" size={50} />
+        Loading Data
+      </div>
+    ) : (
+      chartData
+    )
+  }
+/>
     </>
   );
 }

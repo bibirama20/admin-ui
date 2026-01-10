@@ -3,7 +3,7 @@ import React from "react";
 function Button(props) {
   const { children = "Login", type = "SignUp", variant = "primary" } = props;
 
-  const baseClasses = "h-12 rounded-md text-sm font-medium w-full flex items-center justify-center";
+  const baseClasses = "h-12 rounded-md text-sm font-medium w-full flex items-center justify-center cursor-pointer hover:scale-105";
   const variantClasses = {
     primary: "bg-primary text-white",
     secondary: "bg-gray-200 text-gray-700 border border-gray-300",

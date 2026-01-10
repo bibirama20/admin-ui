@@ -4,53 +4,100 @@ import CheckBox from '../Elements/CheckBox';
 import Button from '../Elements/Button';
 import { Link } from "react-router-dom";
 import { useState } from 'react';
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
+const SignInSchema = Yup.object().shape({
+  email: Yup.string().email("Email tidak valid").required("Email wajib diisi"),
+  password: Yup.string().required("Password wajib diisi"),
+});
 
 function FormSignInNew({ onSubmit }) {
-  const [email, setEmail] = useState("");
-const [password, setPassword] = useState("");
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-  onSubmit(email, password);
-};
   return (
     <>
       {/* form start */}
       <div className="mt-16">
-        <form onSubmit={handleSubmit}>
-          <div className="mb-6">
-            <LabeledInput 
-            label ="Email Address"
-            id="email"
-            type="email"
-            placeholder="helloworld@example.com"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
+        				<Formik
+          initialValues={{
+            email: "",
+            password: "",
+            status: false,
+          }}
+          validationSchema={SignInSchema}
+          onSubmit={async (values, { setSubmitting }) => {
+            try {
+              await onSubmit(values.email, values.password);
+            } finally {
+              setSubmitting(false);
+            }
+          }}
+        >
+          					{({ isSubmitting }) => (
+            <div>
+              {/* form disini */}
+              						<Form>
+             							{/* EMAIL */}
+              <div className="mb-6">
+                <Field name="email">
+                  {({ field }) => (
+                    <LabeledInput
+                      {...field}
+                      id="email"
+                      type="email"
+                      label="Email Address"
+                      placeholder="hello@example.com"
+                    />
+                  )}
+                </Field>
+                                <ErrorMessage
+                  name="email"
+                  component="p"
+                  className="text-red-500 text-xs mt-1"
+                />  
+              </div>
 
-     {/* Password */}
-          <div className="mb-6">
-            <LabeledInput
-              label="Password"
-              id="password"
-              type="password"
-              placeholder="••••••••••••"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+              {/* PASSWORD */}
+              <div className="mb-6">
+                <Field name="password">
+                  {({ field }) => (
+                    <LabeledInput
+                      {...field}
+                      id="password"
+                      type="password"
+                      label="Password"
+                      placeholder="●●●●●●●●●●●●●●"
+                    />
+                  )}
+                </Field> 
+                                <ErrorMessage
+                  name="password"
+                  component="p"
+                  className="text-red-500 text-xs mt-1"
+                /> 
+              </div>
 
-          <div className="mb-3 text-gray-01 flex items-center gap-2">
-            <CheckBox />
-            <span>Keep me signed in</span>
-          </div>
-
-          <Button />
-        </form>
-      </div>
+              {/* CHECKBOX */}
+              <div className="mb-3">
+                <Field name="status">
+                  {({ field }) => (
+                    <CheckBox
+                      {...field}
+                      id="status"
+                      type="checkbox"
+                      checked={field.value}
+                      label="Keep me signed in"
+                    />
+                  )}
+                </Field>
+              </div>
+              							{/* BUTTON */}
+              <Button>{isSubmitting ? "Loading..." : "Login"}</Button>
+            </Form>
+            </div>
+          )}
+        </Formik>
+   </div>
       {/* form end */}
 
       {/* teks start */}
@@ -66,8 +113,13 @@ const handleSubmit = (e) => {
           <span className="flex items-center justify-center">
             <svg
   className="h-6 w-6 mr-2"
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 48 48"
+
+xmlns="http://www.w3.org/2000/svg"
+xmlnsXlink="http://www.w3.org/1999/xlink"
+width="800px"
+height="800px"
+viewBox="-0.5 0 48 48"
+version="1.1"
 >
   <path
     fill="#FFC107"
