@@ -12,7 +12,7 @@ import { goalService } from '../services/dataService'
 import { AuthContext } from '../context/authContext'
 import AppSnackbar from '../components/Elements/AppSnackbar'
 
-function dashboard() {
+function Dashboard()  {
   const [goals, setGoals] = useState({});
   const {logout} = useContext(AuthContext);
 
@@ -88,4 +88,4 @@ function dashboard() {
   )
 }
 
-export default dashboard
+export default Dashboard

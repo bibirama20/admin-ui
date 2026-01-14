@@ -1,53 +1,144 @@
-import React from "react";
+import React, { useState } from "react";
 import LabeledSignUp from "../Elements/LabeledSignUp";
 import ButtonNew from "../Elements/ButtonNew";
 import { Link } from "react-router-dom";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import Toast from "../Elements/Toast";
+
+const SignUpSchema = Yup.object().shape({
+  name: Yup.string().required("Nama wajib diisi"),
+  email: Yup.string()
+    .email("Email tidak valid")
+    .required("Email wajib diisi"),
+  password: Yup.string().required("Password wajib diisi"),
+});
 
 function FormSignUp() {
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "success",
+  });
+
   return (
     <>
-      {/* form start */}
       <div className="mt-10">
-        <form>
+        <Formik
+          initialValues={{
+            name: "",
+            email: "",
+            password: "",
+          }}
+          validationSchema={SignUpSchema}
+          onSubmit={async (values, { setSubmitting, resetForm }) => {
+            try {
+              const response = await fetch("https://jwt-auth-eight-neon.vercel.app/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(values),
+              });
 
-          {/* Name */}
-          <div className="mb-6">
-            <LabeledSignUp
-              label="Name"
-              placeholder="Jojo Ginting"
-            />
-          </div>
+              const result = await response.json();
 
-          {/* Email */}
-          <div className="mb-6">
-            <LabeledSignUp
-              label="Email Address"
-              placeholder="helloworld@example.com"
-            />
-          </div>
+              if (!response.ok || result.status === "error") {
+                setToast({
+                  show: true,
+                  message: result.message || "Email sudah pernah digunakan",
+                  type: "error",
+                });
+              } else {
+                setToast({
+                  show: true,
+                  message: result.message || "Register Berhasil",
+                  type: "success",
+                });
+                resetForm();
+              }
+            } catch (error) {
+              setToast({
+                show: true,
+                message: "Server tidak dapat dihubungi",
+                type: "error",
+              });
+            }
 
-          {/* Password */}
-          <div className="mb-6">
-            <LabeledSignUp
-              label="Password"
-              id="password"
-              type="password"
-              placeholder="••••••••••••"
-              name="password"
-            />
-          </div>
+            setSubmitting(false);
+            
+            setTimeout(() => {
+              setToast((prev) => ({ ...prev, show: false }));
+            }, 3000);
+          }}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              {/* Name */}
+              <div className="mb-6">
+                <Field name="name">
+                  {({ field }) => (
+                    <LabeledSignUp
+                      {...field}
+                      label="Name"
+                      placeholder="Jojo Ginting"
+                    />
+                  )}
+                </Field>
+                <ErrorMessage
+                  name="name"
+                  component="p"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
 
-          {/* Terms text */}
-          <div className="mb-4 text-gray-01 text-sm">
-            By continuing, you agree to our{" "}
-            <span className="text-primary">terms of service</span>.
-          </div>
+              {/* Email */}
+              <div className="mb-6">
+                <Field name="email">
+                  {({ field }) => (
+                    <LabeledSignUp
+                      {...field}
+                      label="Email Address"
+                      placeholder="helloworld@example.com"
+                    />
+                  )}
+                </Field>
+                <ErrorMessage
+                  name="email"
+                  component="p"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
 
-          {/* Main Sign Up Button */}
-<ButtonNew />
-          </form>
-          </div>
-               {/* form end */}
+              {/* Password */}
+              <div className="mb-6">
+                <Field name="password">
+                  {({ field }) => (
+                    <LabeledSignUp
+                      {...field}
+                      type="password"
+                      placeholder="••••••••••••"
+                    />
+                  )}
+                </Field>
+                <ErrorMessage
+                  name="password"
+                  component="p"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
+
+              <div className="mb-4 text-gray-01 text-sm">
+                By continuing, you agree to our{" "}
+                <span className="text-primary">terms of service</span>.
+              </div>
+
+              <ButtonNew>
+                {isSubmitting ? "Loading..." : "Register"}
+              </ButtonNew>
+            </Form>
+          )}
+        </Formik>
+      </div>
+      {/* form end */}
         				{/* teks start */}
         <div className="my-9 px-7 flex flex-col justify-center items-center text-xs text-gray-03">
           <div className="border border-gray-05 w-full"></div>
@@ -119,6 +210,14 @@ function FormSignUp() {
           </Link>
         </p>
       </div>
+
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ ...toast, show: false })}
+        />
+      )}
     </>
   );
 }
